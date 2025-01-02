@@ -1,6 +1,8 @@
+package Modules;
+
 import java.util.HashMap;
 
-public class Room {
+public class Room extends HotelReservationSystem implements ReservationSystem {
     private int[][] rooms;
     private HashMap<Integer, String> room_details;
 
@@ -9,15 +11,12 @@ public class Room {
         this.room_details = room_details;
     }
 
-    public void put_information(int phone_number, String name, int room_number) {
-        room_details.put(room_number, name + " - " + phone_number);
-    }
-
-    public void remove(int room_number) {
-        room_details.remove(room_number);
-    }
-
+    @Override
     public void free_room(String start_time, String end_time, int room_number) {
+        if (room_number < 1 || room_number >= rooms.length) {
+            System.out.println("Invalid room number: " + room_number);
+            return;
+        }
         int start = Integer.parseInt(start_time.substring(0, 2));
         int end = Integer.parseInt(end_time.substring(0, 2));
         if (end < start) {
@@ -26,18 +25,16 @@ public class Room {
         for (int i = start; i < end; i++) {
             rooms[room_number][i % 24] = 0;
         }
-
-        System.out.println("Room: " + room_number + " is free");
-        System.out.println();
+        System.out.println("Room " + room_number + " is now free.");
     }
 
-    public void free_rooms_list(String start_time, String end_time) {
+    @Override
+    public void free_rooms(String start_time, String end_time) {
         int start = Integer.parseInt(start_time.substring(0, 2));
         int end = Integer.parseInt(end_time.substring(0, 2));
         if (end < start) {
             end += 24;
         }
-
         System.out.println("Available rooms:");
         for (int room = 1; room < rooms.length; room++) {
             boolean is_free = true;
@@ -51,6 +48,5 @@ public class Room {
                 System.out.println("Room " + room);
             }
         }
-        System.out.println();
     }
 }
