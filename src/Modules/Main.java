@@ -7,8 +7,10 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         HotelReservationSystem hotel = new HotelReservationSystem(123456789, "Hotel A");
-        String file_path = "src/Sources/Guests.txt";
-
+        DB db = new DB("localhost:1111", "Data","0000", "postgres");
+        String file_path = "src/Sources/Guests.csv";
+        String table = "personal_information";
+        db.create_table(table);
         try {
             Scanner sc = new Scanner(new File(file_path));
             while (sc.hasNextLine()) {
@@ -18,6 +20,7 @@ public class Main {
                 String guest_name = guest_info[1];
                 int guest_room = Integer.parseInt(guest_info[2]);
                 hotel.put_information(phone_number, guest_name, guest_room);
+                db.add_data(guest_name, phone_number, guest_room, table);
             }
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
@@ -32,5 +35,9 @@ public class Main {
         hotel.change_price(2, 1600);
         hotel.get_room_details(5);
         hotel.get_room_details(20);
+
+        db.get_db_data(table);
+        db.close();
+
     }
 }
